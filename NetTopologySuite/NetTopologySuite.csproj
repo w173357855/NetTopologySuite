@@ -15,6 +15,23 @@
     <Description>A .NET library for GIS operations, direct porting of JTS Topology Suite $(JTSCompatibilityLevel) library</Description>
   </PropertyGroup>
 
+  <PropertyGroup Label="NuGet Package Info">
+    <PackageId>NetTopologySuite.Core</PackageId>
+    <Title>NTS - Topology Suite</Title>
+    <Authors>NetTopologySuite - Team</Authors>
+    <Owners>NetTopologySuite - Team</Owners>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Description>The NTS Topology Suite is an API for modelling and manipulating 2-dimensional linear geometry. It provides numerous geometric predicates and functions. NTS conforms to the Simple Features Specification.
+This package references GeoAPI.</Description>
+    <PackageTags>NTS;Topology;OGC;SFS</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Label="SourceLink Info">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedAllSources>true</EmbedAllSources>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="$(SolutionDir)nts.snk" Link="nts.snk" />
   </ItemGroup>
@@ -25,6 +42,9 @@
     <!-- We use ModuleInit.Fody to automatically initialize GeometryServiceProvider when loaded. -->
     <PackageReference Include="ModuleInit.Fody" Version="1.8.0" PrivateAssets="All" />
     <PackageReference Include="Fody" Version="3.0.3" PrivateAssets="All" />
+
+    <!-- SourceLink adds stuff to let debuggers step into our code. -->
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

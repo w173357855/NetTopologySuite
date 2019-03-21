@@ -8,9 +8,41 @@
 
     <RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://www.myget.org/F/nettopologysuite/api/v3/index.json</RestoreAdditionalProjectSources>
 
-    <GeoAPIPackageReferenceVersion>2.0.0-nuget005</GeoAPIPackageReferenceVersion>
+    <GeoAPIPackageReferenceVersion>[2.0.0-nuget005,3.0.0-A)</GeoAPIPackageReferenceVersion>
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)nts.snk</AssemblyOriginatorKeyFile>
+
+    <Deterministic>true</Deterministic>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <!-- Travis-CI -->
+  <PropertyGroup Condition=" '$(TRAVIS)' == 'True' ">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <NtsPrereleaseTagPrefix Condition=" '$(NtsPrereleaseTagPrefix)' == '' ">travis</NtsPrereleaseTagPrefix>
+    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' ">$(TRAVIS_BUILD_NUMBER)</NtsBuildNumber>
+  </PropertyGroup>
+
+  <!-- TeamCity -->
+  <PropertyGroup Condition=" '$(TEAMCITY_VERSION)' != '' ">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <NtsPrereleaseTagPrefix Condition=" '$(NtsPrereleaseTagPrefix)' == '' ">teamcity</NtsPrereleaseTagPrefix>
+    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' ">$(BUILD_NUMBER)</NtsBuildNumber>
+  </PropertyGroup>
+
+  <!-- AppVeyor -->
+  <PropertyGroup Condition=" '$(APPVEYOR)' == 'True' ">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <NtsPrereleaseTagPrefix Condition=" '$(NtsPrereleaseTagPrefix)' == '' ">appveyor</NtsPrereleaseTagPrefix>
+    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' ">$(APPVEYOR_BUILD_NUMBER)</NtsBuildNumber>
+  </PropertyGroup>
+
+  <!-- Fallback for local builds and CI environments we don't recognize -->
+  <PropertyGroup>
+    <NtsPrereleaseTagPrefix Condition=" '$(NtsPrereleaseTagPrefix)' == '' ">pre</NtsPrereleaseTagPrefix>
+
+    <!-- Going as far as yyyyMMddHHmmss triggers dotnet/project-system#1457 -->
+    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' ">$([System.DateTime]::UtcNow.ToString(yyyyMMdd))</NtsBuildNumber>
   </PropertyGroup>
 
   <PropertyGroup Label="Version numbers">
@@ -22,12 +54,8 @@
     <NtsMinorVersion>0</NtsMinorVersion>
     <NtsPatchVersion>0</NtsPatchVersion>
 
-    <Version>$(NtsMajorVersion).$(NtsMinorVersion).$(NtsPatchVersion)</Version>
-
-    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' And '$(TRAVIS_BUILD_NUMBER)' != '' ">$(TRAVIS_BUILD_NUMBER)</NtsBuildNumber>
-    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' And '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(APPVEYOR_BUILD_NUMBER)</NtsBuildNumber>
-    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' And '$(BUILD_NUMBER)' != '' ">$(BUILD_NUMBER)</NtsBuildNumber>
-    <NtsBuildNumber Condition=" '$(NtsBuildNumber)' == '' ">0</NtsBuildNumber>
+    <VersionPrefix>$(NtsMajorVersion).$(NtsMinorVersion).$(NtsPatchVersion)</VersionPrefix>
+    <VersionSuffix Condition=" '$(VersionSuffix)' == '' ">$(NtsPrereleaseTagPrefix)$(NtsBuildNumber.PadLeft(4, '0'))</VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup Label="Assembly Info">
