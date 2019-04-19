@@ -269,6 +269,34 @@ namespace NetTopologySuite.IO
         protected CoordinateSequence ReadCoordinateSequence(BinaryReader reader, int size, CoordinateSystem cs)
         {
             var sequence = _sequenceFactory.Create(size, ToOrdinates(cs));
+
+            bool readZ = false;
+            bool readM = false;
+            switch (cs)
+            {
+                case CoordinateSystem.XY:
+                    break;
+
+                case CoordinateSystem.XYZ:
+                    readZ = true;
+                    break;
+
+                case CoordinateSystem.XYM:
+                    readM = true;
+                    break;
+
+                case CoordinateSystem.XYZM:
+                    readZ = true;
+                    readM = true;
+                    break;
+
+                default:
+                    throw new ArgumentException(string.Format("Coordinate system not supported: {0}", cs));
+            }
+
+            bool setZ = readZ && HandleOrdinate(Ordinate.Z);
+            bool setM = readM && HandleOrdinate(Ordinate.M);
+
             for (int i = 0; i < size; i++)
             {
                 double x = reader.ReadDouble();
@@ -277,35 +305,24 @@ namespace NetTopologySuite.IO
                 if (_precisionModel != null) x = _precisionModel.MakePrecise(x);
                 if (_precisionModel != null) y = _precisionModel.MakePrecise(y);
 
-                sequence.SetOrdinate(i, Ordinate.X, x);
-                sequence.SetOrdinate(i, Ordinate.Y, y);
+                int ordinateIndex = 0;
+                sequence.SetOrdinate(i, ordinateIndex++, x);
+                sequence.SetOrdinate(i, ordinateIndex++, y);
 
-                switch (cs)
+                if (readZ)
                 {
-                    case CoordinateSystem.XY:
-                        continue;
-                    case CoordinateSystem.XYZ:
-                        double z = reader.ReadDouble();
-                        if (HandleOrdinate(Ordinate.Z))
-                            sequence.SetOrdinate(i, Ordinate.Z, z);
-                        break;
-                    case CoordinateSystem.XYM:
-                        double m = reader.ReadDouble();
-                        if (HandleOrdinate(Ordinate.M))
-                            sequence.SetOrdinate(i, Ordinate.Ordinate2, m);
-                        break;
-                    case CoordinateSystem.XYZM:
-                        z = reader.ReadDouble();
-                        if (HandleOrdinate(Ordinate.Z))
-                            sequence.SetOrdinate(i, Ordinate.Z, z);
-                        m = reader.ReadDouble();
-                        if (HandleOrdinate(Ordinate.M))
-                            sequence.SetOrdinate(i, Ordinate.M, m);
-                        break;
-                    default:
-                        throw new ArgumentException(string.Format("Coordinate system not supported: {0}", cs));
+                    double z = reader.ReadDouble();
+                    if (setZ) sequence.SetOrdinate(i, ordinateIndex++, z);
+                }
+
+                if (readM)
+                {
+                    double m = reader.ReadDouble();
+                    if (setM)
+                        sequence.SetOrdinate(i, ordinateIndex++, m);
                 }
             }
+
             return sequence;
         }
 

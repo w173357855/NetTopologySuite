@@ -313,11 +313,17 @@ namespace NetTopologySuite.Geometries
         {
             get
             {
-                if (Coordinate == null)
+                if (CoordinateSequence == null)
                     throw new ArgumentOutOfRangeException("Z called on empty Point");
-                return Coordinate.Z;
+                return CoordinateSequence.GetZ(0);
             }
-            set => Coordinate.Z = value;
+            set
+            {
+                if (CoordinateSequence?.HasZ == true)
+                {
+                    CoordinateSequence.SetOrdinate(0, CoordinateSequence.ZOrdinateIndex, value);
+                }
+            }
         }
 
         /* END ADDED BY MPAUL42: monoGIS team */
@@ -328,9 +334,15 @@ namespace NetTopologySuite.Geometries
             {
                 if (CoordinateSequence == null)
                     throw new ArgumentOutOfRangeException("M called on empty Point");
-                return CoordinateSequence.GetOrdinate(0, Ordinate.M);
+                return CoordinateSequence.GetM(0);
             }
-            set => CoordinateSequence.SetOrdinate(0, Ordinate.M, value);
+            set
+            {
+                if (CoordinateSequence?.HasM == true)
+                {
+                    CoordinateSequence.SetOrdinate(0, CoordinateSequence.MOrdinateIndex, value);
+                }
+            }
         }
     }
 }

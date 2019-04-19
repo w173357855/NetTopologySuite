@@ -37,7 +37,7 @@ namespace NetTopologySuite.Tests.NUnit.IO
         {
             // arrange
             var seq = CreateSequence(Ordinates.XYZ, new double[] { 10, 10 });
-            seq.SetOrdinate(0, Ordinate.Z, double.NaN);
+            seq.SetOrdinate(0, 2, double.NaN);
 
             // act
             var pt1 = (Point)this.reader2DOld.Read("POINT (10 10 NaN)");
@@ -453,8 +453,8 @@ namespace NetTopologySuite.Tests.NUnit.IO
             var reader = new WKTReader(geometryFactory);
             var point1 = ((Point)reader.Read("POINT (123456789.01234567890 10)")).CoordinateSequence;
             var point2 = geometryFactory.CreatePoint(new Coordinate(123456789.01234567890, 10)).CoordinateSequence;
-            Assert.That(point1.GetOrdinate(0, Ordinate.X), Is.EqualTo(point2.GetOrdinate(0, Ordinate.X)).Within(1E-7));
-            Assert.That(point1.GetOrdinate(0, Ordinate.Y), Is.EqualTo(point2.GetOrdinate(0, Ordinate.Y)).Within(1E-7));
+            Assert.That(point1.GetOrdinate(0, 0), Is.EqualTo(point2.GetOrdinate(0, 0)).Within(1E-7));
+            Assert.That(point1.GetOrdinate(0, 1), Is.EqualTo(point2.GetOrdinate(0, 1)).Within(1E-7));
         }
 
         private static CoordinateSequence CreateSequence(Ordinates ordinateFlags, double[] xy)
@@ -482,7 +482,7 @@ namespace NetTopologySuite.Tests.NUnit.IO
             {
                 for (int j = 0; j < dimension; j++)
                 {
-                    res.SetOrdinate(k, (Ordinate)j, ordinateValues[i + j]);
+                    res.SetOrdinate(k, j, ordinateValues[i + j]);
                 }
 
                 k++;

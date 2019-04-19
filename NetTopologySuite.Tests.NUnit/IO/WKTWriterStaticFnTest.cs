@@ -49,8 +49,8 @@ namespace NetTopologySuite.Tests.NUnit.IO
                 var cs = GeometryTestCase.GetCSFactory(Ordinates.XY).Create(size, 2, 0);
                 for (int j = 0; j < cs.Count; j++)
                 {
-                    cs.SetOrdinate(j, Ordinate.X, 100 * _rnd.NextDouble());
-                    cs.SetOrdinate(j, Ordinate.Y, 100 * _rnd.NextDouble());
+                    cs.SetOrdinate(j, 0, 100 * _rnd.NextDouble());
+                    cs.SetOrdinate(j, 1, 100 * _rnd.NextDouble());
                 }
 
                 string toLineStringText = WKTWriter.ToLineString(cs);

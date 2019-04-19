@@ -50,35 +50,25 @@ namespace NetTopologySuite.Operation.Distance3D
             return new AxisPlaneCoordinateSequence(seq, YZIndex);
         }
 
-        private static readonly Ordinate[] XYIndex = new[] {Ordinate.X, Ordinate.Y};
-        private static readonly Ordinate[] XZIndex = new[] {Ordinate.X, Ordinate.Z};
-        private static readonly Ordinate[] YZIndex = new[] {Ordinate.Y, Ordinate.Z};
+        private static readonly int[] XYIndex = { 0, 1 };
+        private static readonly int[] XZIndex = { 0, 2 };
+        private static readonly int[] YZIndex = { 1, 2 };
         // ReSharper restore InconsistentNaming
 
         private readonly CoordinateSequence _seq;
-        private readonly Ordinate[] _indexMap;
+        private readonly int[] _indexMap;
 
-        private AxisPlaneCoordinateSequence(CoordinateSequence seq, Ordinate[] indexMap)
+        private AxisPlaneCoordinateSequence(CoordinateSequence seq, int[] indexMap)
+            : base(seq?.Count ?? 0, 2, 0)
         {
             _seq = seq;
             _indexMap = indexMap;
         }
 
-        public int Dimension => 2;
-
         /// <inheritdoc />
-        public int Measures => 0;
+        public override Coordinate CreateCoordinate() => new CoordinateZ();
 
-        public bool HasZ => false;
-
-        public bool HasM => false;
-
-        public Ordinates Ordinates => _seq.Ordinates;
-
-        /// <inheritdoc />
-        public Coordinate CreateCoordinate() => new CoordinateZ();
-
-        public Coordinate GetCoordinate(int i)
+        public override Coordinate GetCoordinate(int i)
         {
             return GetCoordinateCopy(i);
         }
@@ -90,51 +80,44 @@ namespace NetTopologySuite.Operation.Distance3D
 
         public void GetCoordinate(int index, Coordinate coord)
         {
-            coord.X = GetOrdinate(index, Ordinate.X);
-            coord.Y = GetOrdinate(index, Ordinate.Y);
-            coord.Z = GetOrdinate(index, Ordinate.Z);
+            coord.X = GetOrdinate(index, 0);
+            coord.Y = GetOrdinate(index, 1);
+            coord.Z = GetOrdinate(index, 2);
         }
 
-        public double GetX(int index)
+        public override double GetX(int index)
         {
-            return GetOrdinate(index, Ordinate.X);
+            return GetOrdinate(index, 0);
         }
 
-        public double GetY(int index)
+        public override double GetY(int index)
         {
-            return GetOrdinate(index, Ordinate.Y);
+            return GetOrdinate(index, 1);
         }
 
-        public double GetZ(int index)
+        public override double GetZ(int index)
         {
-            return GetOrdinate(index, Ordinate.Z);
+            return GetOrdinate(index, 2);
         }
 
-        public double GetM(int index)
-        {
-            return double.NaN;
-        }
-
-        public double GetOrdinate(int index, Ordinate ordinateIndex)
+        public override double GetOrdinate(int index, int ordinateIndex)
         {
             // Z ord is always 0
-            if (ordinateIndex > Ordinate.Y) return 0;
-            return _seq.GetOrdinate(index, _indexMap[(int) ordinateIndex]);
+            if (ordinateIndex > 1) return 0;
+            return _seq.GetOrdinate(index, _indexMap[ordinateIndex]);
         }
 
-        public int Count => _seq.Count;
-
-        public void SetOrdinate(int index, Ordinate ordinateIndex, double value)
+        public override void SetOrdinate(int index, int ordinateIndex, double value)
         {
             throw new NotSupportedException();
         }
 
-        public Coordinate[] ToCoordinateArray()
+        public override Coordinate[] ToCoordinateArray()
         {
             throw new NotSupportedException();
         }
 
-        public Envelope ExpandEnvelope(Envelope env)
+        public override Envelope ExpandEnvelope(Envelope env)
         {
             throw new NotSupportedException();
         }
@@ -145,15 +128,14 @@ namespace NetTopologySuite.Operation.Distance3D
             return Copy();
         }
 
-        public CoordinateSequence Copy()
+        public override CoordinateSequence Copy()
         {
             throw new NotSupportedException();
         }
 
-        public CoordinateSequence Reversed()
+        public override CoordinateSequence Reversed()
         {
             throw new NotSupportedException();
         }
-
     }
 }

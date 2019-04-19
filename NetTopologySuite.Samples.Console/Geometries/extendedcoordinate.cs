@@ -56,40 +56,49 @@ namespace NetTopologySuite.Samples.Geometries
         }
 
         /// <inheritdoc />
-        public override double this[Ordinate ordinateIndex]
+        public override double this[int ordinateIndex]
         {
             get
             {
                 switch (ordinateIndex)
                 {
-                    case Ordinate.X:
+                    case 0:
                         return X;
-                    case Ordinate.Y:
+
+                    case 1:
                         return Y;
-                    case Ordinate.Z:
+
+                    case 2:
                         return Z;
-                    case Ordinate.M:
+
+                    case 3:
                         return M;
                 }
+
                 throw new ArgumentOutOfRangeException(nameof(ordinateIndex));
             }
+
             set
             {
                 switch (ordinateIndex)
                 {
-                    case Ordinate.X:
+                    case 0:
                         X = value;
                         return;
-                    case Ordinate.Y:
+
+                    case 1:
                         Y = value;
                         return;
-                    case Ordinate.Z:
+
+                    case 2:
                         Z = value;
                         return;
-                    case Ordinate.M:
+
+                    case 3:
                         M = value;
                         return;
                 }
+
                 throw new ArgumentOutOfRangeException(nameof(ordinateIndex));
             }
         }

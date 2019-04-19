@@ -125,7 +125,7 @@ namespace NetTopologySuite.Geometries
         /// In general, the array cannot be assumed to be the actual internal
         /// storage for the vertices.  Thus modifying the array
         /// may not modify the geometry itself.
-        /// Use the <see cref="CoordinateSequence.SetOrdinate"/> method
+        /// Use the <see cref="CoordinateSequence.SetOrdinate(int, int, double)"/> method
         /// (possibly on the components) to modify the underlying data.
         /// If the coordinates are modified,
         /// <see cref="Geometry.GeometryChanged"/> must be called afterwards.
@@ -133,7 +133,7 @@ namespace NetTopologySuite.Geometries
         /// </remarks>
         /// <returns>The vertices of this <c>Geometry</c>.</returns>
         /// <seealso cref="Geometry.GeometryChanged"/>
-        /// <seealso cref="CoordinateSequence.SetOrdinate"/>
+        /// <seealso cref="CoordinateSequence.SetOrdinate(int, int, double)"/>
         public override Coordinate[] Coordinates
         {
             get

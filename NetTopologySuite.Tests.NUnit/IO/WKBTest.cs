@@ -218,7 +218,7 @@ namespace NetTopologySuite.Tests.NUnit.IO
             for (int i = 0; i < seq.Count; i++)
             {
                 for (int j = 0; j < dimension; j++)
-                    res.SetOrdinate(i, (Ordinate)j, seq.GetOrdinate(i, (Ordinate)j));
+                    res.SetOrdinate(i, j, seq.GetOrdinate(i, j));
             }
             return res;
         }
@@ -289,7 +289,7 @@ namespace NetTopologySuite.Tests.NUnit.IO
     {
         public void Filter(Coordinate coord)
         {
-            coord[Ordinate.Ordinate2] = (coord.X + coord.Y) / 2;
+            coord[2] = (coord.X + coord.Y) / 2;
         }
     }
 

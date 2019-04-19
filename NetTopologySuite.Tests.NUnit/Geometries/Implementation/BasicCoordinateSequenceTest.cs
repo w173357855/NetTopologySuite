@@ -21,10 +21,10 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
         public void TestCloneDimension2()
         {
             var s1 = CoordinateArraySequenceFactory.Instance.Create(2, 2);
-            s1.SetOrdinate(0, Ordinate.X, 1);
-            s1.SetOrdinate(0, Ordinate.Y, 2);
-            s1.SetOrdinate(1, Ordinate.X, 3);
-            s1.SetOrdinate(1, Ordinate.Y, 4);
+            s1.SetOrdinate(0, 0, 1);
+            s1.SetOrdinate(0, 1, 2);
+            s1.SetOrdinate(1, 0, 3);
+            s1.SetOrdinate(1, 1, 4);
 
             var s2 = (CoordinateSequence)s1.Copy();
             Assert.IsTrue(s1.Dimension == s2.Dimension);
@@ -36,12 +36,12 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
         public void TestCloneDimension3()
         {
             var s1 = CoordinateArraySequenceFactory.Instance.Create(2, 3);
-            s1.SetOrdinate(0, Ordinate.X, 1);
-            s1.SetOrdinate(0, Ordinate.Y, 2);
-            s1.SetOrdinate(0, Ordinate.Z, 10);
-            s1.SetOrdinate(1, Ordinate.X, 3);
-            s1.SetOrdinate(1, Ordinate.Y, 4);
-            s1.SetOrdinate(1, Ordinate.Z, 20);
+            s1.SetOrdinate(0, 0, 1);
+            s1.SetOrdinate(0, 1, 2);
+            s1.SetOrdinate(0, 2, 10);
+            s1.SetOrdinate(1, 0, 3);
+            s1.SetOrdinate(1, 1, 4);
+            s1.SetOrdinate(1, 2, 20);
 
             var s2 = (CoordinateSequence)s1.Copy();
             Assert.IsTrue(s1.Dimension == s2.Dimension);
@@ -53,14 +53,14 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
         public void TestCloneDimension4()
         {
             var s1 = CoordinateArraySequenceFactory.Instance.Create(2, 4, 1);
-            s1.SetOrdinate(0, Ordinate.X, 1);
-            s1.SetOrdinate(0, Ordinate.Y, 2);
-            s1.SetOrdinate(0, Ordinate.Z, 10);
-            s1.SetOrdinate(0, Ordinate.M, 100);
-            s1.SetOrdinate(1, Ordinate.X, 3);
-            s1.SetOrdinate(1, Ordinate.Y, 4);
-            s1.SetOrdinate(1, Ordinate.Z, 20);
-            s1.SetOrdinate(1, Ordinate.M, 200);
+            s1.SetOrdinate(0, 0, 1);
+            s1.SetOrdinate(0, 1, 2);
+            s1.SetOrdinate(0, 2, 10);
+            s1.SetOrdinate(0, 3, 100);
+            s1.SetOrdinate(1, 0, 3);
+            s1.SetOrdinate(1, 1, 4);
+            s1.SetOrdinate(1, 2, 20);
+            s1.SetOrdinate(1, 3, 200);
 
             var s2 = (CoordinateSequence)s1.Copy();
             Assert.IsTrue(s1.Dimension == s2.Dimension);

@@ -6,44 +6,24 @@
     public enum Ordinate
     {
         /// <summary>
-        /// Standard ordinate index value for, where X is 0
+        /// X (longitude, horizontal)
         /// </summary>
         X = 0,
 
         /// <summary>
-        /// Standard ordinate index value for, where Y is 1
+        /// Z (latitude, vertical)
         /// </summary>
         Y = 1,
 
         /// <summary>
-        /// Standard ordinate index value for, where Z is 2.
+        /// Z (elevation)
         /// </summary>
-        /// <remarks>
-        /// This constant assumes <see cref="Ordinates.XYZM"/> coordinate sequence definition,
-        /// please check this assumption using <see cref="CoordinateSequence.Dimension"/> and
-        /// <see cref="CoordinateSequence.Measures"/> before use.
-        /// </remarks>
         Z = 2,
 
         /// <summary>
-        /// Standard ordinate index value for, where M is 3.
+        /// M (first measure)
         /// </summary>
-        /// <remarks>
-        /// This constant assumes <see cref="Ordinates.XYZM"/> coordinate sequence definition,
-        /// please check this assumption using <see cref="CoordinateSequence.Dimension"/> and
-        /// <see cref="CoordinateSequence.Measures"/> before use.
-        /// </remarks>
         M = 3,
-
-        /// <summary>
-        /// Ordinate at index 2
-        /// </summary>
-        Ordinate2 = 2,
-
-        /// <summary>
-        /// Ordinate at index 3
-        /// </summary>
-        Ordinate3 = 3,
 
         /// <summary>
         /// Ordinate at index 4
@@ -184,10 +164,5 @@
         /// Ordinate at index 31
         /// </summary>
         Ordinate31 = 31,
-
-        /// <summary>
-        /// Ordinate at index 32
-        /// </summary>
-        Ordinate32 = 32,
     }
 }

@@ -15,17 +15,17 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
         {
             var gf = new GeometryFactory(new PackedCoordinateSequenceFactory());
             var mpSeq = gf.CoordinateSequenceFactory.Create(1, Ordinates.XYZM);
-            mpSeq.SetOrdinate(0, Ordinate.X, 50);
-            mpSeq.SetOrdinate(0, Ordinate.Y, -2);
-            mpSeq.SetOrdinate(0, Ordinate.Z, 10);
-            mpSeq.SetOrdinate(0, Ordinate.M, 20);
+            mpSeq.SetOrdinate(0, 0, 50);
+            mpSeq.SetOrdinate(0, 1, -2);
+            mpSeq.SetOrdinate(0, 2, 10);
+            mpSeq.SetOrdinate(0, 3, 20);
 
             var mp = gf.CreateMultiPoint(mpSeq);
             var pSeq = ((Point)mp.GetGeometryN(0)).CoordinateSequence;
             Assert.AreEqual(4, pSeq.Dimension);
             Assert.AreEqual(Ordinates.XYZM, pSeq.Ordinates);
             for (int i = 0; i < 4; i++)
-                Assert.AreEqual(mpSeq.GetOrdinate(0, (Ordinate)i), pSeq.GetOrdinate(0, (Ordinate)i));
+                Assert.AreEqual(mpSeq.GetOrdinate(0, i), pSeq.GetOrdinate(0, i));
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
             {
                 for (int ordinateIndex = 0; ordinateIndex < seq.Dimension; ordinateIndex++)
                 {
-                    seq.SetOrdinate(index, (Ordinate)ordinateIndex, index);
+                    seq.SetOrdinate(index, ordinateIndex, index);
                 }
             }
         }

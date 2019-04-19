@@ -1,19 +1,22 @@
+using System;
+using System.Runtime.CompilerServices;
+
 namespace NetTopologySuite.Geometries
 {
     /// <summary>
     /// The internal representation of a list of coordinates inside a Geometry.
     /// <para>
     /// This allows Geometries to store their
-    /// points using something other than the NTS <see cref="Coordinate"/> class. 
+    /// points using something other than the NTS <see cref="Coordinate"/> class.
     /// For example, a storage-efficient implementation
     /// might store coordinate sequences as an array of x's
-    /// and an array of y's. 
+    /// and an array of y's.
     /// Or a custom coordinate class might support extra attributes like M-values.
     /// </para>
     /// <para>
     /// Implementing a custom coordinate storage structure
     /// requires implementing the <see cref="CoordinateSequence"/> and
-    /// <see cref="CoordinateSequenceFactory"/> interfaces. 
+    /// <see cref="CoordinateSequenceFactory"/> abstract classes.
     /// To use the custom CoordinateSequence, create a
     /// new <see cref="GeometryFactory"/> parameterized by the CoordinateSequenceFactory
     /// The <see cref="GeometryFactory"/> can then be used to create new <see cref="Geometry"/>s.
@@ -26,15 +29,98 @@ namespace NetTopologySuite.Geometries
     ///// <seealso cref="NetTopologySuite.Geometries.Implementation.CoordinateArraySequenceFactory"/>
     ///// <seealso cref="NetTopologySuite.Geometries.Implementation.ExtendedCoordinateExample"/>
     ///// <seealso cref="NetTopologySuite.Geometries.Implementation.PackedCoordinateSequenceFactory"/>
-    public interface CoordinateSequence
+    [Serializable]
+    public abstract class CoordinateSequence
     {
+        private readonly Ordinates? _ordinates;
+
+        private readonly int _zIndex = -1;
+
+        private readonly int _mIndex = -1;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CoordinateSequence"/> class.
+        /// </summary>
+        /// <param name="count">The value for <see cref="Count"/>.</param>
+        /// <param name="dimension">The value for <see cref="Dimension"/>.</param>
+        /// <param name="measures">The value for <see cref="Measures"/>.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when any argument is negative.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// Thrown when <paramref name="dimension"/> and <paramref name="measures"/> specify fewer
+        /// than two (2) spatial dimensions.
+        /// </exception>
+        protected CoordinateSequence(int count, int dimension, int measures)
+        {
+            if (count < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), count, "Must be non-negative.");
+            }
+
+            if (dimension < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(dimension), dimension, "Must be non-negative");
+            }
+
+            if (measures < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(measures), measures, "Must be non-negative");
+            }
+
+            if (dimension - measures < 2)
+            {
+                throw new ArgumentException("Must have at least two spatial dimensions.");
+            }
+
+            Count = count;
+            Dimension = dimension;
+            Measures = measures;
+
+            if (dimension == 2)
+            {
+                _ordinates = Ordinates.XY;
+            }
+            else if (dimension == 3)
+            {
+                if (measures == 0)
+                {
+                    _zIndex = 2;
+                    _ordinates = Ordinates.XYZ;
+                }
+                else
+                {
+                    _mIndex = 2;
+                    _ordinates = Ordinates.XYM;
+                }
+            }
+            else if (dimension == 4 && measures == 1)
+            {
+                _ordinates = Ordinates.XYZM;
+                _zIndex = 2;
+                _mIndex = 3;
+            }
+            else if (dimension - measures > 2)
+            {
+                _zIndex = 2;
+                if (measures > 0)
+                {
+                    _mIndex = 3;
+                }
+            }
+            else if (measures > 0)
+            {
+                _mIndex = 2;
+            }
+        }
+
         /// <summary>
         /// Returns the dimension (number of ordinates in each coordinate) for this sequence.
         /// <para>
         /// This total includes any measures, indicated by non-zero <see cref="Measures"/>.
         /// </para>
         /// </summary>
-        int Dimension { get; }
+        public int Dimension { get; }
 
         /// <summary>
         /// Gets the number of measures included in <see cref="Dimension"/> for each coordinate for this
@@ -50,36 +136,37 @@ namespace NetTopologySuite.Geometries
         /// <item>Values greater than one are supported</item>
         /// </list>
         /// </remarks>
-        int Measures { get; }
+        public int Measures { get; }
 
         /// <summary>
         /// Gets the kind of ordinates this sequence supplies.
         /// </summary>
-        Ordinates Ordinates { get; }
+        public Ordinates Ordinates
+        {
+            get
+            {
+                if (!_ordinates.HasValue)
+                {
+                    ThrowForUnusualSequence();
+                }
+
+                return _ordinates.GetValueOrDefault();
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating if <see cref="GetZ(int)"/> is supported.
         /// </summary>
-        /// <remarks>
-        /// A possible implementation is to use <see cref="Dimension"/> and <see cref="Measures"/> to determine if
-        /// <see cref="GetZ(int)"/> is supported.
-        /// <code lang="C#">
-        /// public bool HasZ { get => (Dimension - Measures) > 2; }
-        /// </code>
-        /// </remarks>
-        bool HasZ { get; }
-  
+        public virtual bool HasZ => _zIndex >= 0;
+
+        public int ZOrdinateIndex => HasZ ? _zIndex : throw new InvalidOperationException("Z ordinate is not available.");
+
         /// <summary>
         /// Gets a value indicating if <see cref="GetM(int)"/> is supported.
         /// </summary>
-        /// <remarks>
-        /// A possible implementation is to use <see cref="Dimension"/> and <see cref="Measures"/> to determine if
-        /// <see cref="GetM(int)"/> is supported.
-        /// <code lang="C#">
-        /// public bool HasM { get => Dimension > 2 &amp;&amp; Measures > 0; }
-        /// </code>
-        /// </remarks>
-        bool HasM { get; }
+        public virtual bool HasM => _mIndex >= 0;
+
+        public int MOrdinateIndex => HasM ? _mIndex : throw new InvalidOperationException("M ordinate is not available.");
 
         /// <summary>
         /// Creates a coordinate for use in this sequence.
@@ -89,7 +176,7 @@ namespace NetTopologySuite.Geometries
         /// as this sequence and is suitable for use with <see cref="GetCoordinate(int, Coordinate)"/>.
         /// </remarks>
         /// <returns>A coordinate for use with this sequence</returns>
-        Coordinate CreateCoordinate();
+        public virtual Coordinate CreateCoordinate() => Coordinates.Create(Dimension, Measures);
 
         /// <summary>
         /// Returns (possibly a copy of) the ith Coordinate in this collection.
@@ -102,7 +189,7 @@ namespace NetTopologySuite.Geometries
         /// </summary>
         /// <param name="i"></param>
         /// <returns></returns>
-        Coordinate GetCoordinate(int i);
+        public virtual Coordinate GetCoordinate(int i) => GetCoordinateCopy(i);
 
         /// <summary>
         /// Returns a copy of the i'th coordinate in this sequence.
@@ -112,29 +199,52 @@ namespace NetTopologySuite.Geometries
         /// </summary>
         /// <param name="i">The index of the coordinate to retrieve.</param>
         /// <returns>A copy of the i'th coordinate in the sequence</returns>
-        Coordinate GetCoordinateCopy(int i);             
+        public virtual Coordinate GetCoordinateCopy(int i)
+        {
+            var result = CreateCoordinate();
+            GetCoordinate(i, result);
+            return result;
+        }
 
         /// <summary>
-        /// Copies the i'th coordinate in the sequence to the supplied Coordinate.  
-        /// At least the first two dimensions <b>must</b> be copied.        
+        /// Copies the i'th coordinate in the sequence to the supplied Coordinate.
+        /// At least the first two dimensions <b>must</b> be copied.
         /// </summary>
         /// <param name="index">The index of the coordinate to copy.</param>
         /// <param name="coord">A Coordinate to receive the value.</param>
-        void GetCoordinate(int index, Coordinate coord);
+        public virtual void GetCoordinate(int index, Coordinate coord)
+        {
+            if (coord == null)
+            {
+                throw new ArgumentNullException(nameof(coord));
+            }
+
+            coord.X = GetX(index);
+            coord.Y = GetY(index);
+            if (HasZ)
+            {
+                coord.Z = GetZ(index);
+            }
+
+            if (HasM)
+            {
+                coord.M = GetM(index);
+            }
+        }
 
         /// <summary>
         /// Returns ordinate X (0) of the specified coordinate.
         /// </summary>
         /// <param name="index"></param>
         /// <returns>The value of the X ordinate in the index'th coordinate.</returns>
-        double GetX(int index);
+        public virtual double GetX(int index) => GetOrdinate(index, 0);
 
         /// <summary>
         /// Returns ordinate Y (1) of the specified coordinate.
         /// </summary>
         /// <param name="index"></param>
         /// <returns>The value of the Y ordinate in the index'th coordinate.</returns>
-        double GetY(int index);
+        public virtual double GetY(int index) => GetOrdinate(index, 1);
 
         /// <summary>
         /// Returns ordinate Z of the specified coordinate if available.
@@ -159,7 +269,7 @@ namespace NetTopologySuite.Geometries
         /// }
         /// </code>
         /// </remarks>
-        double GetZ(int index);
+        public virtual double GetZ(int index) => _zIndex < 0 ? Coordinate.NullOrdinate : GetOrdinate(index, _zIndex);
 
         /// <summary>
         /// Returns ordinate M of the specified coordinate if available.
@@ -185,7 +295,23 @@ namespace NetTopologySuite.Geometries
         /// }
         /// </code>
         /// </remarks>
-        double GetM(int index);
+        public virtual double GetM(int index) => _mIndex < 0 ? Coordinate.NullOrdinate : GetOrdinate(index, _mIndex);
+
+        /// <summary>
+        /// Returns the ordinate of a coordinate in this sequence.
+        /// Ordinate indices 0 and 1 are assumed to be X and Y.
+        /// <para/>
+        /// Ordinate indices greater than 1 have user-defined semantics
+        /// (for instance, they may contain other dimensions or measure
+        /// values as described by <see cref="Dimension"/> and <see cref="Measures"/>.
+        /// </summary>
+        /// <remarks>
+        /// If the sequence does not provide value for the required ordinate, the implementation <b>must not</b> throw an exception, it should return <see cref="Coordinate.NullOrdinate"/>.
+        /// </remarks>
+        /// <param name="index">The coordinate index in the sequence.</param>
+        /// <param name="ordinateIndex">The ordinate index in the coordinate (in range [0, dimension-1]).</param>
+        /// <returns>The ordinate value, or <see cref="Coordinate.NullOrdinate"/> if the sequence does not provide values for <paramref name="ordinateIndex"/>"/></returns>
+        public abstract double GetOrdinate(int index, int ordinateIndex);
 
         /// <summary>
         /// Returns the ordinate of a coordinate in this sequence.
@@ -200,24 +326,84 @@ namespace NetTopologySuite.Geometries
         /// </remarks>
         /// <param name="index">The coordinate index in the sequence.</param>
         /// <param name="ordinate">The ordinate index in the coordinate (in range [0, dimension-1]).</param>
-        /// <returns>The ordinate value, or <see cref="Coordinate.NullOrdinate"/> if the sequence does not provide values for <paramref name="ordinate"/>"/></returns>       
-        double GetOrdinate(int index, Ordinate ordinate);
+        /// <returns>The ordinate value, or <see cref="Coordinate.NullOrdinate"/> if the sequence does not provide values for <paramref name="ordinate"/>"/></returns>
+        public double GetOrdinate(int index, Ordinate ordinate)
+        {
+            if (!_ordinates.HasValue)
+            {
+                ThrowForUnusualSequence();
+            }
+
+            switch (ordinate)
+            {
+                case Ordinate.X:
+                    return GetX(index);
+
+                case Ordinate.Y:
+                    return GetY(index);
+
+                case Ordinate.Z:
+                    return GetZ(index);
+
+                case Ordinate.M:
+                    return GetM(index);
+
+                default:
+                    return Coordinate.NullOrdinate;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating the number of coordinates in this sequence.
-        /// </summary>        
-        int Count { get; }
+        /// </summary>
+        public int Count { get; }
 
         /// <summary>
-        /// Sets the value for a given ordinate of a coordinate in this sequence.       
+        /// Sets the value for a given ordinate of a coordinate in this sequence.
+        /// </summary>
+        /// <remarks>
+        /// If the sequence can't store the ordinate value, the implementation <b>must not</b> throw an exception, it should simply ignore the call.
+        /// </remarks>
+        /// <param name="index">The coordinate index in the sequence.</param>
+        /// <param name="ordinateIndex">The ordinate index in the coordinate (in range [0, dimension-1]).</param>
+        /// <param name="value">The new ordinate value.</param>
+        public abstract void SetOrdinate(int index, int ordinateIndex, double value);
+
+        /// <summary>
+        /// Sets the value for a given ordinate of a coordinate in this sequence.
         /// </summary>
         /// <remarks>
         /// If the sequence can't store the ordinate value, the implementation <b>must not</b> throw an exception, it should simply ignore the call.
         /// </remarks>
         /// <param name="index">The coordinate index in the sequence.</param>
         /// <param name="ordinate">The ordinate index in the coordinate (in range [0, dimension-1]).</param>
-        /// <param name="value">The new ordinate value.</param>       
-        void SetOrdinate(int index, Ordinate ordinate, double value);
+        /// <param name="value">The new ordinate value.</param>
+        public void SetOrdinate(int index, Ordinate ordinate, double value)
+        {
+            if (!_ordinates.HasValue)
+            {
+                ThrowForUnusualSequence();
+            }
+
+            switch (ordinate)
+            {
+                case Ordinate.X:
+                    SetOrdinate(index, 0, value);
+                    break;
+
+                case Ordinate.Y:
+                    SetOrdinate(index, 1, value);
+                    break;
+
+                case Ordinate.Z when _zIndex >= 0:
+                    SetOrdinate(index, _zIndex, value);
+                    break;
+
+                case Ordinate.M when _mIndex >= 0:
+                    SetOrdinate(index, _mIndex, value);
+                    break;
+            }
+        }
 
         /// <summary>
         /// Returns (possibly copies of) the Coordinates in this collection.
@@ -228,20 +414,89 @@ namespace NetTopologySuite.Geometries
         /// be built from scratch.
         /// </summary>
         /// <returns></returns>
-        Coordinate[] ToCoordinateArray();
+        public virtual Coordinate[] ToCoordinateArray()
+        {
+            var result = new Coordinate[Count];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = GetCoordinate(i);
+            }
+
+            return result;
+        }
 
         /// <summary>
         /// Expands the given Envelope to include the coordinates in the sequence.
-        /// Allows implementing classes to optimize access to coordinate values.      
+        /// Allows implementing classes to optimize access to coordinate values.
         /// </summary>
         /// <param name="env">The envelope to expand.</param>
-        /// <returns>A reference to the expanded envelope.</returns>       
-        Envelope ExpandEnvelope(Envelope env);
+        /// <returns>A reference to the expanded envelope.</returns>
+        public virtual Envelope ExpandEnvelope(Envelope env)
+        {
+            if (env == null)
+            {
+                throw new ArgumentNullException(nameof(env));
+            }
+
+            for (int i = 0; i < Count; i++)
+            {
+                env.ExpandToInclude(GetX(i), GetY(i));
+            }
+
+            return env;
+        }
 
         /// <summary>
         /// Returns a deep copy of this collection.
         /// </summary>
         /// <returns>A copy of the coordinate sequence containing copies of all points</returns>
-        CoordinateSequence Copy();
+        public abstract CoordinateSequence Copy();
+
+        public virtual CoordinateSequence Reversed() => this is ReversedCoordinateSequence alreadyReversed ? alreadyReversed.Inner.Copy() : new ReversedCoordinateSequence(this);
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ThrowForUnusualSequence() => throw new InvalidOperationException("Ordinate(s) enum methods are only supported on XY, XYZ, XYM, and XYZM sequences.");
+
+        private sealed class ReversedCoordinateSequence : CoordinateSequence
+        {
+            public ReversedCoordinateSequence(CoordinateSequence toReverse) : base(toReverse.Count, toReverse.Dimension, toReverse.Measures) => Inner = toReverse.Copy();
+
+            public CoordinateSequence Inner { get; }
+
+            public override bool HasM => Inner.HasM;
+
+            public override bool HasZ => Inner.HasZ;
+
+            public override Coordinate CreateCoordinate() => Inner.CreateCoordinate();
+
+            public override Coordinate GetCoordinate(int i) => Inner.GetCoordinate(Count - i - 1);
+
+            public override Coordinate GetCoordinateCopy(int i) => Inner.GetCoordinateCopy(Count - i - 1);
+
+            public override void GetCoordinate(int index, Coordinate coord) => Inner.GetCoordinate(Count - index - 1, coord);
+
+            public override double GetX(int index) => Inner.GetX(Count - index - 1);
+
+            public override double GetY(int index) => Inner.GetY(Count - index - 1);
+
+            public override double GetZ(int index) => Inner.GetZ(Count - index - 1);
+
+            public override double GetM(int index) => Inner.GetM(Count - index - 1);
+
+            public override double GetOrdinate(int index, int ordinateIndex) => Inner.GetOrdinate(Count - index - 1, ordinateIndex);
+
+            public override void SetOrdinate(int index, int ordinateIndex, double value) => Inner.SetOrdinate(Count - index - 1, ordinateIndex, value);
+
+            public override Coordinate[] ToCoordinateArray()
+            {
+                var result = Inner.ToCoordinateArray();
+                Array.Reverse(result);
+                return result;
+            }
+
+            public override Envelope ExpandEnvelope(Envelope env) => Inner.ExpandEnvelope(env);
+
+            public override CoordinateSequence Copy() => new ReversedCoordinateSequence(Inner);
+        }
     }
 }

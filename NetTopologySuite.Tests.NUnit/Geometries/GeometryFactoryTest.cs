@@ -45,8 +45,8 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
         {
             var gf = new GeometryFactory(CoordinateArraySequenceFactory.Instance);
             var mpSeq = gf.CoordinateSequenceFactory.Create(1, 2);
-            mpSeq.SetOrdinate(0, Ordinate.X, 50);
-            mpSeq.SetOrdinate(0, Ordinate.Y, -2);
+            mpSeq.SetOrdinate(0, 0, 50);
+            mpSeq.SetOrdinate(0, 1, -2);
 
             var g = gf.CreatePoint(mpSeq);
             var geometryN = (Point)g.GetGeometryN(0);

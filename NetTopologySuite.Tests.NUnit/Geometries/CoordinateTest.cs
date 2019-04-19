@@ -57,21 +57,21 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
         public void TestGetOrdinate()
         {
             var c = new CoordinateZ(350.2, 4566.8, 5266.3);
-            Assert.AreEqual(c[Ordinate.X], 350.2);
-            Assert.AreEqual(c[Ordinate.Y], 4566.8);
-            Assert.AreEqual(c[Ordinate.Z], 5266.3);
+            Assert.AreEqual(c[0], 350.2);
+            Assert.AreEqual(c[1], 4566.8);
+            Assert.AreEqual(c[2], 5266.3);
         }
 
         [Test]
         public void TestSetOrdinate()
         {
             var c = new CoordinateZ();
-            c[Ordinate.X] = 111;
-            c[Ordinate.Y] = 222;
-            c[Ordinate.Z] = 333;
-            Assert.AreEqual(c[Ordinate.X], 111.0);
-            Assert.AreEqual(c[Ordinate.Y], 222.0);
-            Assert.AreEqual(c[Ordinate.Z], 333.0);
+            c[0] = 111;
+            c[1] = 222;
+            c[2] = 333;
+            Assert.AreEqual(c[0], 111.0);
+            Assert.AreEqual(c[1], 222.0);
+            Assert.AreEqual(c[2], 333.0);
         }
 
         [Test]
@@ -191,7 +191,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             Assert.AreEqual(3d, c.Z);
             Assert.AreEqual(c.Z, c[Ordinate.Z]);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => c[Ordinate.M] = 4);
+            Assert.Throws<InvalidOperationException>(() => c[Ordinate.M] = 4);
         }
 
         [Test]

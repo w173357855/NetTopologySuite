@@ -33,9 +33,9 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
             var seq = CsFactory.Create(Size, 3);
             for (int i = 0; i < seq.Count; i++)
             {
-                seq.SetOrdinate(i, Ordinate.X, coords[i].X);
-                seq.SetOrdinate(i, Ordinate.Y, coords[i].Y);
-                seq.SetOrdinate(i, Ordinate.Z, coords[i].Z);
+                seq.SetOrdinate(i, 0, coords[i].X);
+                seq.SetOrdinate(i, 1, coords[i].Y);
+                seq.SetOrdinate(i, 2, coords[i].Z);
             }
 
             Assert.IsTrue(IsEqual(seq, coords));
@@ -51,8 +51,8 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
             var seq = CsFactory.Create(Size, 2);
             for (int i = 0; i < seq.Count; i++)
             {
-                seq.SetOrdinate(i, Ordinate.X, coords[i].X);
-                seq.SetOrdinate(i, Ordinate.Y, coords[i].Y);
+                seq.SetOrdinate(i, 0, coords[i].X);
+                seq.SetOrdinate(i, 1, coords[i].Y);
             }
 
             for (int i = 0; i < seq.Count; i++)
@@ -110,9 +110,9 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
                 if (!coord.Equals(seq.GetCoordinate(i)))
                     return false;
 
-                if (coord.X != seq.GetOrdinate(i, Ordinate.X))
+                if (coord.X != seq.GetOrdinate(i, 0))
                     return false;
-                if (coord.Y != seq.GetOrdinate(i, Ordinate.Y))
+                if (coord.Y != seq.GetOrdinate(i, 1))
                     return false;
                 if (seq.HasZ)
                 {
@@ -126,12 +126,12 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
                 }
                 if (seq.Dimension > 2)
                 {
-                    if (coord[Ordinate.Ordinate2] != seq.GetOrdinate(i, Ordinate.Ordinate2))
+                    if (coord[2] != seq.GetOrdinate(i, 2))
                         return false;
                 }
                 if (seq.Dimension > 3)
                 {
-                    if (coord[Ordinate.Ordinate3] != seq.GetOrdinate(i, Ordinate.Ordinate3))
+                    if (coord[3] != seq.GetOrdinate(i, 3))
                         return false;
                 }
             }
@@ -175,18 +175,18 @@ namespace NetTopologySuite.Tests.NUnit.Geometries.Implementation
                 }
 
                 // Ordinate indexed getters
-                if (!coords[i].X.Equals(seq.GetOrdinate(i, Ordinate.X)))
+                if (!coords[i].X.Equals(seq.GetOrdinate(i, 0)))
                     return false;
-                if (!coords[i].Y.Equals(seq.GetOrdinate(i, Ordinate.Y)))
+                if (!coords[i].Y.Equals(seq.GetOrdinate(i, 1)))
                     return false;
                 if (seq.Dimension > 2)
                 {
-                    if (!coords[i][Ordinate.Ordinate2].Equals(seq.GetOrdinate(i, Ordinate.Ordinate2)))
+                    if (!coords[i][2].Equals(seq.GetOrdinate(i, 2)))
                         return false;
                 }
                 if (seq.Dimension > 3)
                 {
-                    if (!coords[i][Ordinate.Ordinate3].Equals(seq.GetOrdinate(i, Ordinate.Ordinate3)))
+                    if (!coords[i][3].Equals(seq.GetOrdinate(i, 3)))
                         return false;
                 }
 

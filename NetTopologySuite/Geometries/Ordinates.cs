@@ -54,35 +54,27 @@ namespace NetTopologySuite.Geometries
         XYZM = XYZ | M,
 
         /// <summary>
-        /// Flag for ordinate at index 2
-        /// </summary>
-        Ordinate2 = 1 << Ordinate.Ordinate2,
-        /// <summary>
-        /// Flag for ordinate at index 2
-        /// </summary>
-        Ordinate3 = 1 << Ordinate.Ordinate3,
-        /// <summary>
-        /// Flag for ordinate at index 2
+        /// Flag for ordinate at index 4
         /// </summary>
         Ordinate4 = 1 << Ordinate.Ordinate4,
         /// <summary>
-        /// Flag for ordinate at index 2
+        /// Flag for ordinate at index 5
         /// </summary>
         Ordinate5 = 1 << Ordinate.Ordinate5,
         /// <summary>
-        /// Flag for ordinate at index 2
+        /// Flag for ordinate at index 6
         /// </summary>
         Ordinate6 = 1 << Ordinate.Ordinate6,
         /// <summary>
-        /// Flag for ordinate at index 2
+        /// Flag for ordinate at index 7
         /// </summary>
         Ordinate7 = 1 << Ordinate.Ordinate7,
         /// <summary>
-        /// Flag for ordinate at index 2
+        /// Flag for ordinate at index 8
         /// </summary>
         Ordinate8 = 1 << Ordinate.Ordinate8,
         /// <summary>
-        /// Flag for ordinate at index 2
+        /// Flag for ordinate at index 9
         /// </summary>
         Ordinate9 = 1 << Ordinate.Ordinate9,
         /// <summary>
@@ -173,9 +165,5 @@ namespace NetTopologySuite.Geometries
         /// Flag for ordinate at index 31
         /// </summary>
         Ordinate31 = 1 << Ordinate.Ordinate31,
-        /// <summary>
-        /// Flag for ordinate at index 32
-        /// </summary>
-        Ordinate32 = 1 << Ordinate.Ordinate32,
     }
 }

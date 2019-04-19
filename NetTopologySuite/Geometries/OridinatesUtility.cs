@@ -14,11 +14,27 @@ namespace NetTopologySuite.Geometries
         /// <returns>The number of dimensions</returns>
         public static int OrdinatesToDimension(Ordinates ordinates)
         {
-            var ret = 2;
-            if ((ordinates & Ordinates.Z) != 0) ret++;
-            if ((ordinates & Ordinates.M) != 0) ret++;
+            // unset flags one-by-one until all flags are unset.
+            // the number of times we did that is how many flags were initially set.
+            int flagsUnsetSoFar = 0;
+            while (ordinates != Ordinates.None)
+            {
+                ordinates &= (Ordinates)((int)ordinates - 1);
 
-            return ret;
+                ++flagsUnsetSoFar;
+            }
+
+            return flagsUnsetSoFar;
+        }
+
+        /// <summary>
+        /// Translates the <paramref name="ordinates"/>-flag to a number of measures.
+        /// </summary>
+        /// <param name="ordinates">The ordinates flag</param>
+        /// <returns>The number of measures</returns>
+        public static int OrdinatesToMeasures(Ordinates ordinates)
+        {
+            return (int)(ordinates & Ordinates.M) >> (int)Ordinate.M;
         }
 
         /// <summary>
@@ -44,7 +60,7 @@ namespace NetTopologySuite.Geometries
         /// <returns>The ordinate indices</returns>
         public static Ordinate[] ToOrdinateArray(Ordinates ordinates, int maxEval = 4)
         {
-            if (maxEval > 32) maxEval = 32;
+            if (maxEval > 31) maxEval = 31;
             var intOrdinates = (int) ordinates;
             var ordinateList = new List<Ordinate>(maxEval);
             for (var i = 0; i < maxEval; i++)

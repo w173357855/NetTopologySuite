@@ -131,9 +131,9 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             {
                 if (i % 6 == 0) ordinates.Append("\n\t\t");
                 ordinates.Append("new[]{");
-                ordinates.Append(sequence.GetOrdinate(i, Ordinate.X));
+                ordinates.Append(sequence.GetOrdinate(i, 0));
                 ordinates.Append(',');
-                ordinates.Append(sequence.GetOrdinate(i, Ordinate.Y));
+                ordinates.Append(sequence.GetOrdinate(i, 1));
                 if (i < sequence.Count - 1) ordinates.Append("},"); else ordinates.Append('}');
             }
             ordinates.Append("};");
@@ -147,8 +147,8 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             var sequence = csFactory.Create(ordinateValues.Length, dim);
             for (int i = 0; i < ordinateValues.Length; i++)
             {
-                sequence.SetOrdinate(i, Ordinate.X, ordinateValues[i][0]);
-                sequence.SetOrdinate(i, Ordinate.Y, ordinateValues[i][1]);
+                sequence.SetOrdinate(i, 0, ordinateValues[i][0]);
+                sequence.SetOrdinate(i, 1, ordinateValues[i][1]);
             }
             return FillNonPlanarDimensions(sequence);
         }
@@ -159,7 +159,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             // initialize with a data signature where coords look like [1, 10, 100, ...]
             for (int i = 0; i < size; i++)
                 for (int d = 0; d < dim; d++)
-                    cs.SetOrdinate(i, (Ordinate) d, i*Math.Pow(10, d));
+                    cs.SetOrdinate(i, d, i*Math.Pow(10, d));
             return cs;
         }
 
@@ -174,8 +174,8 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             var cs = csFactory.Create(size, dim);
             for (int i = 0; i < size; i++)
             {
-                cs.SetOrdinate(i, Ordinate.X, pm.MakePrecise(range.Width * rnd.NextDouble() + range.MinX));
-                cs.SetOrdinate(i, Ordinate.Y, pm.MakePrecise(range.Height * rnd.NextDouble() + range.MinY));
+                cs.SetOrdinate(i, 0, pm.MakePrecise(range.Width * rnd.NextDouble() + range.MinX));
+                cs.SetOrdinate(i, 1, pm.MakePrecise(range.Height * rnd.NextDouble() + range.MinY));
             }
 
             return FillNonPlanarDimensions(cs);
@@ -283,8 +283,8 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             }
 
             int minIndex = sequence.Count / 2;
-            sequence.SetOrdinate(minIndex, (Ordinate)0, 5);
-            sequence.SetOrdinate(minIndex, (Ordinate)1, 5);
+            sequence.SetOrdinate(minIndex, 0, 5);
+            sequence.SetOrdinate(minIndex, 1, 5);
 
             Assert.AreEqual(minIndex, CoordinateSequences.MinCoordinateIndex(sequence));
             Assert.AreEqual(minIndex, CoordinateSequences.MinCoordinateIndex(sequence, 2, sequence.Count - 2));
@@ -337,15 +337,15 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
         private static void CheckCoordinateAt(CoordinateSequence seq1, int pos1,
                                               CoordinateSequence seq2, int pos2, int dim)
         {
-            Assert.AreEqual(seq1.GetOrdinate(pos1, Ordinate.X), seq2.GetOrdinate(pos2, Ordinate.X),
+            Assert.AreEqual(seq1.GetOrdinate(pos1, 0), seq2.GetOrdinate(pos2, 0),
                 "unexpected x-ordinate at pos " + pos2);
-            Assert.AreEqual(seq1.GetOrdinate(pos1, Ordinate.Y), seq2.GetOrdinate(pos2, Ordinate.Y),
+            Assert.AreEqual(seq1.GetOrdinate(pos1, 1), seq2.GetOrdinate(pos2, 1),
                 "unexpected y-ordinate at pos " + pos2);
 
             // check additional ordinates
             for (int j = 2; j < dim; j++)
             {
-                Assert.AreEqual(seq1.GetOrdinate(pos1, (Ordinate)j), seq2.GetOrdinate(pos2, (Ordinate)j),
+                Assert.AreEqual(seq1.GetOrdinate(pos1, j), seq2.GetOrdinate(pos2, j),
                     "unexpected " + j + "-ordinate at pos " + pos2);
             }
         }
@@ -358,20 +358,20 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             var sequence = factory.Create(num, dimension);
             if (num == 0) return FillNonPlanarDimensions(sequence);
 
-            sequence.SetOrdinate(0, Ordinate.X, 10);
-            sequence.SetOrdinate(0, Ordinate.Y, 10);
+            sequence.SetOrdinate(0, 0, 10);
+            sequence.SetOrdinate(0, 1, 10);
             if (num == 1) return FillNonPlanarDimensions(sequence);
 
-            sequence.SetOrdinate(1, Ordinate.X, 20);
-            sequence.SetOrdinate(1, Ordinate.Y, 10);
+            sequence.SetOrdinate(1, 0, 20);
+            sequence.SetOrdinate(1, 1, 10);
             if (num == 2) return FillNonPlanarDimensions(sequence);
 
-            sequence.SetOrdinate(2, Ordinate.X, 20);
-            sequence.SetOrdinate(2, Ordinate.Y, 20);
+            sequence.SetOrdinate(2, 0, 20);
+            sequence.SetOrdinate(2, 1, 20);
             if (num == 3) return FillNonPlanarDimensions(sequence);
 
-            sequence.SetOrdinate(3, Ordinate.X, 10.00001);
-            sequence.SetOrdinate(3, Ordinate.Y,  9.99999);
+            sequence.SetOrdinate(3, 0, 10.00001);
+            sequence.SetOrdinate(3, 1,  9.99999);
             return FillNonPlanarDimensions(sequence);
 
         }
@@ -384,7 +384,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
 
             for (int i = 0; i < seq.Count; i++)
                 for (int j = 2; j < seq.Dimension; j++)
-                    seq.SetOrdinate(i, (Ordinate)j, i * Math.Pow(10, j - 1));
+                    seq.SetOrdinate(i, j, i * Math.Pow(10, j - 1));
 
             return seq;
         }
@@ -397,7 +397,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
 
             // ensure it is closed
             for (int i = 0; i < dimension; i++)
-                res.SetOrdinate(48, (Ordinate)i, res.GetOrdinate(0, (Ordinate)i));
+                res.SetOrdinate(48, i, res.GetOrdinate(0, i));
 
             return res;
         }
@@ -415,13 +415,13 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             for (int i = 0; i < numPoints; i++)
             {
                 double dx = Math.Cos(angle) * radius;
-                sequence.SetOrdinate(i, Ordinate.X, pm.MakePrecise(center.X + dx));
+                sequence.SetOrdinate(i, 0, pm.MakePrecise(center.X + dx));
                 double dy = Math.Sin(angle) * radius;
-                sequence.SetOrdinate(i, Ordinate.Y, pm.MakePrecise(center.Y + dy));
+                sequence.SetOrdinate(i, 1, pm.MakePrecise(center.Y + dy));
 
                 // set other ordinate values to predictable values
                 for (int j = 2; j < dimension; j++)
-                    sequence.SetOrdinate(i, (Ordinate)j, Math.Pow(10, j - 1) * i);
+                    sequence.SetOrdinate(i, j, Math.Pow(10, j - 1) * i);
 
                 angle += angleStep;
                 angle %= angleCircle;

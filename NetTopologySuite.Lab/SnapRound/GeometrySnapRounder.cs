@@ -147,8 +147,8 @@ namespace NetTopologySuite.SnapRound
             for (int i = 0; i < seq.Count; i++)
             {
                 var coord = new Coordinate(
-                    seq.GetOrdinate(i, Ordinate.X),
-                    seq.GetOrdinate(i, Ordinate.Y));
+                    seq.GetOrdinate(i, 0),
+                    seq.GetOrdinate(i, 1));
                 pm.MakePrecise(coord);
                 coordList.Add(coord, false);
             }
