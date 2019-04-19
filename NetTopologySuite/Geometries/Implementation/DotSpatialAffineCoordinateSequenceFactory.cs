@@ -9,16 +9,15 @@ namespace NetTopologySuite.Geometries.Implementation
     {
         private static DotSpatialAffineCoordinateSequenceFactory _instance;
         private static readonly object InstanceLock = new object();
-        private readonly Ordinates _ordinates;
 
         private DotSpatialAffineCoordinateSequenceFactory()
-            :this(Ordinates.XYZM)
+            : this(Ordinates.XYZM)
         {
         }
 
         public DotSpatialAffineCoordinateSequenceFactory(Ordinates ordinates)
+            : base(ordinates)
         {
-            _ordinates = Ordinates.XY | ordinates;
         }
 
         /// <summary>
@@ -42,7 +41,7 @@ namespace NetTopologySuite.Geometries.Implementation
         /// </summary>
         /// <param name="coordinates">the coordinates, which may not be null nor contain null elements.</param>
         /// <returns></returns>
-        public CoordinateSequence Create(Coordinate[] coordinates)
+        public override CoordinateSequence Create(Coordinate[] coordinates)
         {
             return new DotSpatialAffineCoordinateSequence(coordinates, Ordinates);
         }
@@ -54,27 +53,13 @@ namespace NetTopologySuite.Geometries.Implementation
         /// </summary>
         /// <param name="coordSeq"></param>
         /// <returns>A coordinate sequence</returns>
-        public CoordinateSequence Create(CoordinateSequence coordSeq)
+        public override CoordinateSequence Create(CoordinateSequence coordSeq)
         {
             return new DotSpatialAffineCoordinateSequence(coordSeq, Ordinates);
         }
 
-        /// <summary>
-        /// Creates a <see cref="CoordinateSequence" /> of the specified size and dimension.
-        /// For this to be useful, the <see cref="CoordinateSequence" /> implementation must be mutable.
-        /// </summary>
-        /// <param name="size"></param>
-        /// <param name="dimension">the dimension of the coordinates in the sequence
-        /// (if user-specifiable, otherwise ignored)</param>
-        /// <returns>A coordinate sequence</returns>
-        public CoordinateSequence Create(int size, int dimension)
-        {
-
-            return new DotSpatialAffineCoordinateSequence(size, Ordinates & OrdinatesUtility.DimensionToOrdinates(dimension));
-        }
-
         /// <inheritdoc />
-        public CoordinateSequence Create(int size, int dimension, int measures)
+        public override CoordinateSequence Create(int size, int dimension, int measures)
         {
             var ordinates = OrdinatesUtility.DimensionToOrdinates(dimension);
             if (dimension == 3 && measures == 1)
@@ -95,7 +80,7 @@ namespace NetTopologySuite.Geometries.Implementation
         /// <see cref="Geometries.Ordinates.Z"/> and <see cref="Geometries.Ordinates.M"/> can be set.
         /// </param>
         /// <returns>A coordinate sequence.</returns>
-        public CoordinateSequence Create(int size, Ordinates ordinates)
+        public override CoordinateSequence Create(int size, Ordinates ordinates)
         {
             return new DotSpatialAffineCoordinateSequence(size, Ordinates & ordinates);
         }
@@ -138,10 +123,5 @@ namespace NetTopologySuite.Geometries.Implementation
         {
             return new DotSpatialAffineCoordinateSequence(xy, z, m);
         }
-
-        /// <summary>
-        /// Gets the Ordinate flags that sequences created by this factory can cope with.
-        /// </summary>
-        public Ordinates Ordinates => _ordinates;
     }
 }
