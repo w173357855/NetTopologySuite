@@ -94,23 +94,26 @@ namespace NetTopologySuite.Geometries
                     _ordinates = Ordinates.XYM;
                 }
             }
-            else if (dimension == 4 && measures == 1)
+            else if (measures == 1)
             {
-                _ordinates = Ordinates.XYZM;
                 _zIndex = 2;
                 _mIndex = 3;
+                if (dimension <= 32)
+                {
+                    _ordinates = Ordinates.None;
+                    for (int i = 0; i < dimension; i++)
+                    {
+                        _ordinates |= (Ordinates)(1 << i);
+                    }
+                }
             }
-            else if (dimension - measures > 2)
+            else
             {
                 _zIndex = 2;
                 if (measures > 0)
                 {
                     _mIndex = 3;
                 }
-            }
-            else if (measures > 0)
-            {
-                _mIndex = 2;
             }
         }
 
