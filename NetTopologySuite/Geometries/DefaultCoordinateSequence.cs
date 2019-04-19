@@ -12,7 +12,7 @@ namespace NetTopologySuite.Geometries
     /// </summary>
     [Serializable]
     [Obsolete("No longer used.")]
-    public class DefaultCoordinateSequence : ICoordinateSequence
+    public class DefaultCoordinateSequence : CoordinateSequence
     {
         private readonly Coordinate[] _coordinates;
 
@@ -29,10 +29,10 @@ namespace NetTopologySuite.Geometries
         }
 
         /// <summary>
-        /// Creates a new sequence based on a deep copy of the given <see cref="ICoordinateSequence"/>.
+        /// Creates a new sequence based on a deep copy of the given <see cref="CoordinateSequence"/>.
         /// </summary>
         /// <param name="coordSeq">The coordinate sequence that will be copied</param>
-        public DefaultCoordinateSequence(ICoordinateSequence coordSeq)
+        public DefaultCoordinateSequence(CoordinateSequence coordSeq)
         {
             _coordinates = new Coordinate[coordSeq.Count];
             for (int i = 0; i < _coordinates.Length; i++)
@@ -231,7 +231,7 @@ namespace NetTopologySuite.Geometries
         /// Creates a reversed version of this coordinate sequence with cloned <see cref="Coordinate"/>s
         /// </summary>
         /// <returns>A reversed version of this sequence</returns>
-        public ICoordinateSequence Reversed()
+        public CoordinateSequence Reversed()
         {
             var coordinates = new Coordinate[_coordinates.Length];
             int j = _coordinates.Length;
@@ -255,7 +255,7 @@ namespace NetTopologySuite.Geometries
         /// Creates a deep copy of this <see cref="DefaultCoordinateSequence"/>.
         /// </summary>
         /// <returns>The copied coordinate sequence.</returns>
-        public ICoordinateSequence Copy()
+        public CoordinateSequence Copy()
         {
             var cloneCoordinates = new Coordinate[_coordinates.Length];
             for (int i = 0; i < _coordinates.Length; i++)

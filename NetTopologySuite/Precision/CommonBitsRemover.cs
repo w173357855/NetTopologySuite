@@ -134,7 +134,7 @@ namespace NetTopologySuite.Precision
             ///
             /// </summary>
             /// <param name="seq">The coordinate sequence</param>
-            public void Filter(ICoordinateSequence seq, int i)
+            public void Filter(CoordinateSequence seq, int i)
             {
                 double xp = seq.GetOrdinate(i, Ordinate.X) + _trans.X;
                 double yp = seq.GetOrdinate(i, Ordinate.Y) + _trans.Y;

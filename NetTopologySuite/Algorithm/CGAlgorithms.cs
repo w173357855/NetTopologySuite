@@ -119,7 +119,7 @@ namespace NetTopologySuite.Algorithm
         /// <param name="ring">A sequence of <see cref="Coordinate"/>s representing the ring (which must have first point identical to last point)</param>
         /// <returns>true if p is inside ring.</returns>
         [Obsolete("Use PointLocation.IsInRing")]
-        public static bool IsPointInRing(Coordinate p, ICoordinateSequence ring)
+        public static bool IsPointInRing(Coordinate p, CoordinateSequence ring)
         {
             return PointLocation.IsInRing(p, ring);
         }
@@ -151,7 +151,7 @@ namespace NetTopologySuite.Algorithm
         /// <param name="ring">A sequence of coordinates representing the ring (which must have first point identical to last point)</param>
         /// <returns>The <see cref="Location"/> of p relative to the ring</returns>
         [Obsolete("Use PointLocation.LocateInRing")]
-        public static Location LocatePointInRing(Coordinate p, ICoordinateSequence ring)
+        public static Location LocatePointInRing(Coordinate p, CoordinateSequence ring)
         {
             return PointLocation.LocateInRing(p, ring);
         }
@@ -204,7 +204,7 @@ namespace NetTopologySuite.Algorithm
         /// <returns>true if the ring is oriented <see cref="Algorithm.OrientationIndex.CounterClockwise"/></returns>
         /// <exception cref="ArgumentException">If there are too few points to determine orientation (&lt;4)</exception>
         [Obsolete("Use Orientation.IsCCW")]
-        public static bool IsCCW(ICoordinateSequence ring)
+        public static bool IsCCW(CoordinateSequence ring)
         {
             return Orientation.IsCCW(ring);
         }
@@ -321,7 +321,7 @@ namespace NetTopologySuite.Algorithm
         /// <param name="ring">The coordinates forming the ring</param>
         /// <returns>The signed area of the ring</returns>
         [Obsolete("Use Area.OfRingSigned")]
-        public static double SignedArea(ICoordinateSequence ring)
+        public static double SignedArea(CoordinateSequence ring)
         {
             return Area.OfRingSigned(ring);
         }
@@ -332,7 +332,7 @@ namespace NetTopologySuite.Algorithm
         /// <param name="pts">The points specifying the <c>LineString</c></param>
         /// <returns>The length of the <c>LineString</c></returns>
         [Obsolete("Use Length.OfLine")]
-        public static double Length(ICoordinateSequence pts)
+        public static double Length(CoordinateSequence pts)
         {
             return Algorithm.Length.OfLine(pts);
         }

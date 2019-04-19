@@ -8,7 +8,7 @@ namespace NetTopologySuite.Geometries.Implementation
     /// A <c>CoordinateSequence</c> implementation based on a packed arrays.
     /// </summary>
     [Serializable]
-    public abstract class PackedCoordinateSequence : ICoordinateSequence
+    public abstract class PackedCoordinateSequence : CoordinateSequence
     {
         /// <summary>
         /// A soft reference to the Coordinate[] representation of this sequence.
@@ -344,7 +344,7 @@ namespace NetTopologySuite.Geometries.Implementation
         [Obsolete("Use Copy()")]
         public abstract object Clone();
 
-        public abstract ICoordinateSequence Copy();
+        public abstract CoordinateSequence Copy();
 
         /// <summary>
         /// Expands the given Envelope to include the coordinates in the sequence.
@@ -354,7 +354,7 @@ namespace NetTopologySuite.Geometries.Implementation
         /// <returns>A reference to the expanded envelope.</returns>
         public abstract Envelope ExpandEnvelope(Envelope env);
 
-        public abstract ICoordinateSequence Reversed();
+        public abstract CoordinateSequence Reversed();
 
         [OnDeserialized]
         private void OnDeserialization(StreamingContext context)
@@ -520,8 +520,8 @@ namespace NetTopologySuite.Geometries.Implementation
 
         }
 
-        /// <inheritdoc cref="ICoordinateSequence.Copy"/>
-        public override ICoordinateSequence Copy()
+        /// <inheritdoc cref="CoordinateSequence.Copy"/>
+        public override CoordinateSequence Copy()
         {
             double[] clone = new double[_coords.Length];
             Array.Copy(_coords, clone, _coords.Length);
@@ -578,7 +578,7 @@ namespace NetTopologySuite.Geometries.Implementation
             return env;
         }
 
-        public override ICoordinateSequence Reversed()
+        public override CoordinateSequence Reversed()
         {
             int dim = Dimension;
             double[] coords = new double[_coords.Length];
@@ -740,8 +740,8 @@ namespace NetTopologySuite.Geometries.Implementation
 
         }
 
-        /// <inheritdoc cref="ICoordinateSequence.Copy"/>
-        public override ICoordinateSequence Copy()
+        /// <inheritdoc cref="CoordinateSequence.Copy"/>
+        public override CoordinateSequence Copy()
         {
             float[] clone = new float[_coords.Length];
             Array.Copy(_coords, clone, _coords.Length);
@@ -797,7 +797,7 @@ namespace NetTopologySuite.Geometries.Implementation
         return env;
         }
 
-        public override ICoordinateSequence Reversed()
+        public override CoordinateSequence Reversed()
         {
             int dim = Dimension;
             float[] coords = new float[_coords.Length];

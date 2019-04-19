@@ -142,7 +142,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             Assert.IsTrue(true);
         }
 
-        private static ICoordinateSequence CreateSequenceFromOrdinates(ICoordinateSequenceFactory csFactory, int dim)
+        private static CoordinateSequence CreateSequenceFromOrdinates(CoordinateSequenceFactory csFactory, int dim)
         {
             var sequence = csFactory.Create(ordinateValues.Length, dim);
             for (int i = 0; i < ordinateValues.Length; i++)
@@ -153,7 +153,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             return FillNonPlanarDimensions(sequence);
         }
 
-        private static ICoordinateSequence CreateTestSequence(ICoordinateSequenceFactory csFactory, int size, int dim)
+        private static CoordinateSequence CreateTestSequence(CoordinateSequenceFactory csFactory, int size, int dim)
         {
             var cs = csFactory.Create(size, dim);
             // initialize with a data signature where coords look like [1, 10, 100, ...]
@@ -168,7 +168,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
          * Deprecated only use to update in conjunction with <see cref="TestCreateRandomOrdinates" />
          */
         [Obsolete]
-        private static ICoordinateSequence CreateRandomTestSequence(ICoordinateSequenceFactory csFactory, int size, int dim,
+        private static CoordinateSequence CreateRandomTestSequence(CoordinateSequenceFactory csFactory, int size, int dim,
                                                          Random rnd, Envelope range, PrecisionModel pm)
         {
             var cs = csFactory.Create(size, dim);
@@ -181,7 +181,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             return FillNonPlanarDimensions(cs);
         }
 
-        private static void DoTestReverse(ICoordinateSequenceFactory factory, int dimension)
+        private static void DoTestReverse(CoordinateSequenceFactory factory, int dimension)
         {
 
             // arrange
@@ -196,7 +196,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
                 CheckCoordinateAt(sequence, i, reversed, sequence.Count - i - 1, dimension);
         }
 
-        private static void DoTestCopy(ICoordinateSequenceFactory factory, int dimension)
+        private static void DoTestCopy(CoordinateSequenceFactory factory, int dimension)
         {
 
             // arrange
@@ -224,7 +224,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             // ToDo test if dimensions don't match
         }
 
-        private static void DoTestIsRing(ICoordinateSequenceFactory factory, int dimension)
+        private static void DoTestIsRing(CoordinateSequenceFactory factory, int dimension)
         {
 
             // arrange
@@ -259,7 +259,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             Assert.IsTrue(isRingIncomplete4b);
         }
 
-        private static void DoTestIndexOf(ICoordinateSequenceFactory factory, int dimension)
+        private static void DoTestIndexOf(CoordinateSequenceFactory factory, int dimension)
         {
             // arrange
             var sequence = CreateSequenceFromOrdinates(factory, dimension);
@@ -271,7 +271,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
 
         }
 
-        private static void DoTestMinCoordinateIndex(ICoordinateSequenceFactory factory, int dimension)
+        private static void DoTestMinCoordinateIndex(CoordinateSequenceFactory factory, int dimension)
         {
 
             var sequence = CreateSequenceFromOrdinates(factory, dimension);
@@ -291,7 +291,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
 
         }
 
-        private static void DoTestScroll(ICoordinateSequenceFactory factory, int dimension)
+        private static void DoTestScroll(CoordinateSequenceFactory factory, int dimension)
         {
 
             // arrange
@@ -312,7 +312,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             }
         }
 
-        private static void DoTestScrollRing(ICoordinateSequenceFactory factory, int dimension)
+        private static void DoTestScrollRing(CoordinateSequenceFactory factory, int dimension)
         {
 
             // arrange
@@ -334,8 +334,8 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             CheckCoordinateAt(scrolled, 0, scrolled, scrolled.Count - 1, dimension);
         }
 
-        private static void CheckCoordinateAt(ICoordinateSequence seq1, int pos1,
-                                              ICoordinateSequence seq2, int pos2, int dim)
+        private static void CheckCoordinateAt(CoordinateSequence seq1, int pos1,
+                                              CoordinateSequence seq2, int pos2, int dim)
         {
             Assert.AreEqual(seq1.GetOrdinate(pos1, Ordinate.X), seq2.GetOrdinate(pos2, Ordinate.X),
                 "unexpected x-ordinate at pos " + pos2);
@@ -350,7 +350,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             }
         }
 
-        private static ICoordinateSequence CreateAlmostRing(ICoordinateSequenceFactory factory, int dimension, int num)
+        private static CoordinateSequence CreateAlmostRing(CoordinateSequenceFactory factory, int dimension, int num)
         {
 
             if (num > 4) num = 4;
@@ -376,7 +376,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
 
         }
 
-        private static ICoordinateSequence FillNonPlanarDimensions(ICoordinateSequence seq)
+        private static CoordinateSequence FillNonPlanarDimensions(CoordinateSequence seq)
         {
 
             if (seq.Dimension < 3)
@@ -389,7 +389,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
             return seq;
         }
 
-        private static ICoordinateSequence CreateCircle(ICoordinateSequenceFactory factory, int dimension,
+        private static CoordinateSequence CreateCircle(CoordinateSequenceFactory factory, int dimension,
                                                        Coordinate center, double radius)
         {
             // Get a complete circular string
@@ -401,7 +401,7 @@ namespace NetTopologySuite.Tests.NUnit.Geometries
 
             return res;
         }
-        private static ICoordinateSequence CreateCircularString(ICoordinateSequenceFactory factory, int dimension,
+        private static CoordinateSequence CreateCircularString(CoordinateSequenceFactory factory, int dimension,
                                                                Coordinate center, double radius, double startAngle,
                                                                int numPoints)
         {

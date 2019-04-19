@@ -8,7 +8,7 @@ namespace NetTopologySuite.Geometries
     /// </summary>
     [Serializable]
     [Obsolete("No longer used")]
-    public class DefaultCoordinateSequenceFactory : ICoordinateSequenceFactory
+    public class DefaultCoordinateSequenceFactory : CoordinateSequenceFactory
     {
         // NOTE: modified for "safe" assembly in Sql 2005
         // Readonly added
@@ -39,27 +39,27 @@ namespace NetTopologySuite.Geometries
         /// <param name="coordinates">Coordinates array, which may not be null
         /// nor contain null elements</param>
         /// <returns>Singleton instance of DefaultCoordinateSequenceFactory.</returns>
-        public ICoordinateSequence Create(Coordinate[] coordinates)
+        public CoordinateSequence Create(Coordinate[] coordinates)
         {
             return new DefaultCoordinateSequence(coordinates);
         }
 
-        public ICoordinateSequence Create(ICoordinateSequence coordSeq)
+        public CoordinateSequence Create(CoordinateSequence coordSeq)
         {
             throw new NotImplementedException();
         }
 
-        public ICoordinateSequence Create(int size, int dimension)
+        public CoordinateSequence Create(int size, int dimension)
         {
             throw new NotImplementedException();
         }
 
-        public ICoordinateSequence Create(int size, int dimension, int measures)
+        public CoordinateSequence Create(int size, int dimension, int measures)
         {
             throw new NotImplementedException();
         }
 
-        public ICoordinateSequence Create(int size, Ordinates ordinates)
+        public CoordinateSequence Create(int size, Ordinates ordinates)
         {
             throw new NotImplementedException();
         }

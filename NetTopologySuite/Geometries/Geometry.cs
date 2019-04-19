@@ -296,7 +296,7 @@ namespace NetTopologySuite.Geometries
         /// In general, the array cannot be assumed to be the actual internal
         /// storage for the vertices.  Thus modifying the array
         /// may not modify the geometry itself.
-        /// Use the <see cref="ICoordinateSequence.SetOrdinate"/> method
+        /// Use the <see cref="CoordinateSequence.SetOrdinate"/> method
         /// (possibly on the components) to modify the underlying data.
         /// If the coordinates are modified,
         /// <see cref="Geometry.GeometryChanged"/> must be called afterwards.
@@ -304,7 +304,7 @@ namespace NetTopologySuite.Geometries
         /// </remarks>
         /// <returns>The vertices of this <c>Geometry</c>.</returns>
         /// <seealso cref="Geometry.GeometryChanged"/>
-        /// <seealso cref="ICoordinateSequence.SetOrdinate"/>
+        /// <seealso cref="CoordinateSequence.SetOrdinate"/>
         public abstract Coordinate[] Coordinates { get; }
 
         /// <summary>
@@ -1704,7 +1704,7 @@ namespace NetTopologySuite.Geometries
         public abstract void Apply(ICoordinateFilter filter);
 
         /// <summary>
-        /// Performs an operation on the coordinates in this <c>Geometry</c>'s <see cref="ICoordinateSequence"/>s.
+        /// Performs an operation on the coordinates in this <c>Geometry</c>'s <see cref="CoordinateSequence"/>s.
         /// </summary>
         /// <remarks>
         /// If the filter reports that a coordinate value has been changed,
@@ -1915,7 +1915,7 @@ namespace NetTopologySuite.Geometries
         /// defined in "Normal Form For Geometry" in the NTS Technical
         /// Specifications.
         /// </returns>
-        public int CompareTo(object o, IComparer<ICoordinateSequence> comp)
+        public int CompareTo(object o, IComparer<CoordinateSequence> comp)
         {
             var other = o as Geometry;
             if (other == null)
@@ -2024,7 +2024,7 @@ namespace NetTopologySuite.Geometries
         ///      defined in "Normal Form For Geometry" in the JTS Technical
         ///      Specifications
         /// </returns>
-        protected internal abstract int CompareToSameClass(object o, IComparer<ICoordinateSequence> comp);
+        protected internal abstract int CompareToSameClass(object o, IComparer<CoordinateSequence> comp);
 
         /// <summary>
         /// Returns the first non-zero result of <c>CompareTo</c> encountered as
@@ -2118,7 +2118,7 @@ namespace NetTopologySuite.Geometries
             return result;
         }
 
-        protected static double[] CreateArray(ICoordinateSequence sequence, Ordinate ordinate)
+        protected static double[] CreateArray(CoordinateSequence sequence, Ordinate ordinate)
         {
             double[] result = new double[sequence.Count];
             for (int i = 0; i < result.Length; i++)
