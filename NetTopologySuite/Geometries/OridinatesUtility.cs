@@ -14,6 +14,9 @@ namespace NetTopologySuite.Geometries
         /// <returns>The number of dimensions</returns>
         public static int OrdinatesToDimension(Ordinates ordinates)
         {
+            // dimension should ALWAYS take X and Y into account.
+            ordinates |= Ordinates.XY;
+
             // unset flags one-by-one until all flags are unset.
             // the number of times we did that is how many flags were initially set.
             int flagsUnsetSoFar = 0;
