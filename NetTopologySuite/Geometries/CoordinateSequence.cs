@@ -98,13 +98,13 @@ namespace NetTopologySuite.Geometries
             {
                 _zIndex = 2;
                 _mIndex = 3;
-                if (dimension <= 32)
+                if (dimension < 32)
                 {
-                    _ordinates = Ordinates.None;
-                    for (int i = 0; i < dimension; i++)
-                    {
-                        _ordinates |= (Ordinates)(1 << i);
-                    }
+                    _ordinates = (Ordinates)((1 << dimension) - 1);
+                }
+                else if (dimension == 32)
+                {
+                    _ordinates = unchecked((Ordinates)0xFFFFFFFF);
                 }
             }
             else
