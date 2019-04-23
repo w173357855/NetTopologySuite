@@ -77,43 +77,39 @@ namespace NetTopologySuite.Geometries
             Dimension = dimension;
             Measures = measures;
 
-            if (dimension == 2)
+            // Z is the first non-measure dimension after X and Y, if any.
+            if (dimension - measures > 2)
             {
-                _ordinates = Ordinates.XY;
+                _zIndex = 2;
             }
-            else if (dimension == 3)
+
+            if (measures > 0)
             {
-                if (measures == 0)
-                {
-                    _zIndex = 2;
+                // JTS convention defines measures to immediately follow spatial dimensions.
+                _mIndex = dimension - measures;
+            }
+
+            // treat the Ordinates enum as safely as we can, and only set it for XY, XYZ, XYM, and
+            // XYZM sequences.  we can't unambiguously talk about any other kinds of sequences,
+            // especially (but not exclusively) those with measures > 1, because Ordinate.Ordinate4
+            // is not defined as either a spatial or measure dimension.
+            switch (dimension)
+            {
+                case 2:
+                    _ordinates = Ordinates.XY;
+                    break;
+
+                case 3 when measures == 0:
                     _ordinates = Ordinates.XYZ;
-                }
-                else
-                {
-                    _mIndex = 2;
+                    break;
+
+                case 3 when measures == 1:
                     _ordinates = Ordinates.XYM;
-                }
-            }
-            else if (measures == 1)
-            {
-                _zIndex = 2;
-                _mIndex = 3;
-                if (dimension < 32)
-                {
-                    _ordinates = (Ordinates)((1 << dimension) - 1);
-                }
-                else if (dimension == 32)
-                {
-                    _ordinates = unchecked((Ordinates)0xFFFFFFFF);
-                }
-            }
-            else
-            {
-                _zIndex = 2;
-                if (measures > 0)
-                {
-                    _mIndex = 3;
-                }
+                    break;
+
+                case 4 when measures == 1:
+                    _ordinates = Ordinates.XYZM;
+                    break;
             }
         }
 
