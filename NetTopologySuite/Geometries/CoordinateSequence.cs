@@ -493,8 +493,14 @@ namespace NetTopologySuite.Geometries
 
             public override Coordinate[] ToCoordinateArray()
             {
-                var result = _inner.ToCoordinateArray();
-                Array.Reverse(result);
+                // can't rely on _inner.ToCoordinateArray(), because it might return a reference to
+                // an underlying array.
+                var result = new Coordinate[Count];
+                for (int i = 0, j = result.Length - 1; i < result.Length; i++, j--)
+                {
+                    result[i] = _inner.GetCoordinate(j);
+                }
+
                 return result;
             }
 
