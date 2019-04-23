@@ -451,7 +451,7 @@ namespace NetTopologySuite.Geometries
         /// <returns>A copy of the coordinate sequence containing copies of all points</returns>
         public abstract CoordinateSequence Copy();
 
-        public virtual CoordinateSequence Reversed() => new ReversedCoordinateSequence(this.Copy());
+        public virtual CoordinateSequence Reversed() => new ReversedCoordinateSequence(Copy() ?? throw new InvalidOperationException("Cannot reverse a coordinate sequence whose Copy() method returns null."));
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ThrowForUnusualSequence() => throw new InvalidOperationException("Ordinate(s) enum methods are only supported on XY, XYZ, XYM, and XYZM sequences.");
@@ -459,46 +459,50 @@ namespace NetTopologySuite.Geometries
         [Serializable]
         private sealed class ReversedCoordinateSequence : CoordinateSequence
         {
-            public ReversedCoordinateSequence(CoordinateSequence toReverse) : base(toReverse.Count, toReverse.Dimension, toReverse.Measures) => Inner = toReverse;
+            private readonly CoordinateSequence _inner;
 
-            public CoordinateSequence Inner { get; }
+            public ReversedCoordinateSequence(CoordinateSequence inner)
+                : base(inner.Count, inner.Dimension, inner.Measures)
+            {
+                _inner = inner;
+            }
 
-            public override bool HasM => Inner.HasM;
+            public override bool HasM => _inner.HasM;
 
-            public override bool HasZ => Inner.HasZ;
+            public override bool HasZ => _inner.HasZ;
 
-            public override Coordinate CreateCoordinate() => Inner.CreateCoordinate();
+            public override Coordinate CreateCoordinate() => _inner.CreateCoordinate();
 
-            public override Coordinate GetCoordinate(int i) => Inner.GetCoordinate(Count - i - 1);
+            public override Coordinate GetCoordinate(int i) => _inner.GetCoordinate(Count - i - 1);
 
-            public override Coordinate GetCoordinateCopy(int i) => Inner.GetCoordinateCopy(Count - i - 1);
+            public override Coordinate GetCoordinateCopy(int i) => _inner.GetCoordinateCopy(Count - i - 1);
 
-            public override void GetCoordinate(int index, Coordinate coord) => Inner.GetCoordinate(Count - index - 1, coord);
+            public override void GetCoordinate(int index, Coordinate coord) => _inner.GetCoordinate(Count - index - 1, coord);
 
-            public override double GetX(int index) => Inner.GetX(Count - index - 1);
+            public override double GetX(int index) => _inner.GetX(Count - index - 1);
 
-            public override double GetY(int index) => Inner.GetY(Count - index - 1);
+            public override double GetY(int index) => _inner.GetY(Count - index - 1);
 
-            public override double GetZ(int index) => Inner.GetZ(Count - index - 1);
+            public override double GetZ(int index) => _inner.GetZ(Count - index - 1);
 
-            public override double GetM(int index) => Inner.GetM(Count - index - 1);
+            public override double GetM(int index) => _inner.GetM(Count - index - 1);
 
-            public override double GetOrdinate(int index, int ordinateIndex) => Inner.GetOrdinate(Count - index - 1, ordinateIndex);
+            public override double GetOrdinate(int index, int ordinateIndex) => _inner.GetOrdinate(Count - index - 1, ordinateIndex);
 
-            public override void SetOrdinate(int index, int ordinateIndex, double value) => Inner.SetOrdinate(Count - index - 1, ordinateIndex, value);
+            public override void SetOrdinate(int index, int ordinateIndex, double value) => _inner.SetOrdinate(Count - index - 1, ordinateIndex, value);
 
             public override Coordinate[] ToCoordinateArray()
             {
-                var result = Inner.ToCoordinateArray();
+                var result = _inner.ToCoordinateArray();
                 Array.Reverse(result);
                 return result;
             }
 
-            public override Envelope ExpandEnvelope(Envelope env) => Inner.ExpandEnvelope(env);
+            public override Envelope ExpandEnvelope(Envelope env) => _inner.ExpandEnvelope(env);
 
-            public override CoordinateSequence Copy() => new ReversedCoordinateSequence(Inner.Copy());
+            public override CoordinateSequence Copy() => new ReversedCoordinateSequence(_inner.Copy());
 
-            public override CoordinateSequence Reversed() => this.Inner.Copy();
+            public override CoordinateSequence Reversed() => _inner.Copy();
         }
     }
 }
