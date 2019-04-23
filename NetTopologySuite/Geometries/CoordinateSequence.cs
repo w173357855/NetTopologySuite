@@ -451,14 +451,15 @@ namespace NetTopologySuite.Geometries
         /// <returns>A copy of the coordinate sequence containing copies of all points</returns>
         public abstract CoordinateSequence Copy();
 
-        public virtual CoordinateSequence Reversed() => this is ReversedCoordinateSequence alreadyReversed ? alreadyReversed.Inner.Copy() : new ReversedCoordinateSequence(this);
+        public virtual CoordinateSequence Reversed() => this is ReversedCoordinateSequence alreadyReversed ? alreadyReversed.Inner.Copy() : new ReversedCoordinateSequence(this.Copy());
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ThrowForUnusualSequence() => throw new InvalidOperationException("Ordinate(s) enum methods are only supported on XY, XYZ, XYM, and XYZM sequences.");
 
+        [Serializable]
         private sealed class ReversedCoordinateSequence : CoordinateSequence
         {
-            public ReversedCoordinateSequence(CoordinateSequence toReverse) : base(toReverse.Count, toReverse.Dimension, toReverse.Measures) => Inner = toReverse.Copy();
+            public ReversedCoordinateSequence(CoordinateSequence toReverse) : base(toReverse.Count, toReverse.Dimension, toReverse.Measures) => Inner = toReverse;
 
             public CoordinateSequence Inner { get; }
 
@@ -495,7 +496,7 @@ namespace NetTopologySuite.Geometries
 
             public override Envelope ExpandEnvelope(Envelope env) => Inner.ExpandEnvelope(env);
 
-            public override CoordinateSequence Copy() => new ReversedCoordinateSequence(Inner);
+            public override CoordinateSequence Copy() => new ReversedCoordinateSequence(Inner.Copy());
         }
     }
 }
